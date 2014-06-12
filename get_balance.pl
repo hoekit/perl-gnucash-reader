@@ -14,6 +14,14 @@ sub get_child_balance {
 	run_sql($sql,$db);
 }
 
+sub leaf_guid_balance {
+	my ($guid,$db) = @_;
+	my $sql = 'select sum(value_num) from splits '.
+				'where account_guid = "'.$guid.'"';
+	return run_sql($sql,$db);
+}
+
+
 sub gen_sql {
 	my ($acct_name) = @_;
 	my $sub_sql = guid_sql($acct_name);
@@ -45,16 +53,17 @@ sub run_sql {
 	return $res;
 }
 
-sub get_parent_balance {
-	my ($acct,$db,$balance) = @_;
+sub guid_balance {
+	my ($guid,$db,$balance) = @_;
 
 	# Get list of child accounts
-	foreach my $g (child_guids($acct,$db)) {
+	foreach my $g (child_guids($guid,$db)) {
 		# If child account is leaf, get_child_balance for leaf account
 		if (is_leaf_guid($g,$db)) {
-			$balance += get_guid_balance($g,$db);
+			$balance += leaf_guid_balance($g,$db);
 		} else {
-			# If child account not leaf, recursively call get_parent_balance
+			# If child account not leaf, recursively call guid_balance
+			$balance += guid_balance($g,$db,$balance);
 		}
 	}
 	return $balance;
@@ -67,7 +76,7 @@ sub is_leaf_account {
 	my $guid = run_sql(guid_sql($acct),$db);
 
 	# Get list of accounts with that as parent guid
-	my @child_guid = child_guids($acct,$db);
+	my @child_guid = child_guids($guid,$db);
 
 	# return TRUE if list of child accounts is empty
 	$#child_guid == -1 ? 1 : 0;
@@ -86,8 +95,7 @@ sub is_leaf_guid {
 }
 
 sub child_guids {
-	my ($acct,$db) = @_;
-	my $guid = get_guid($acct,$db);
+	my ($guid,$db) = @_;
 	my $sql = 'select guid from accounts where parent_guid = "'.$guid.'"';
 	my $result = run_sql($sql,$db);
 	return split("\n",$result);
@@ -96,7 +104,7 @@ sub child_guids {
 ##### TESTING ##### 
 
 my $acct;
-my $db = "./simple-checkbook.gnucash";
+my $db = "./simple-checkbook2.gnucash";
 my $sql;
 my $guid;
 
@@ -141,6 +149,11 @@ $acct = "Assets:Current Assets:Checking Account";
 is( get_child_balance($acct, $db), 4600, 
 	'get_child_balance() works.');
 
+$acct = "Assets:Current Assets:Checking Account";
+$guid = "14d772a027f4bfed77d39362989b87b6";
+is( leaf_guid_balance($guid, $db), 4600, 
+	'leaf_guid_balance() works.');
+
 $acct = "Assets:Current Assets";
 $sql = 'select guid from accounts where name = "Current Assets" and parent_guid = (select guid from accounts where name = "Assets" and parent_guid = (select guid from accounts where name = "Root Account"))';
 is( guid_sql($acct), $sql,
@@ -151,10 +164,17 @@ $guid = "14d772a027f4bfed77d39362989b87b6";
 is( get_guid($acct,$db), $guid,
 	'get_guid() works.');
 
-$acct = "Assets:Current Assets";
-$guid = "14d772a027f4bfed77d39362989b87b6";
-my @guids = child_guids($acct,$db);
-is( join("|",@guids), $guid,
+$guid = "9fc6b68385116caba4611d1440fa6a24";
+my $res_guid = "53f15dbd44e778d1f48efb53e6df0fa2".
+				"|a2607fd7e4b67fe9e8fc8421841e91de";
+my @guids = child_guids($guid,$db);
+is( join("|",@guids), $res_guid,
+	'child_guids() works.');
+
+$guid = "53f15dbd44e778d1f48efb53e6df0fa2";
+my $res_guid = "14d772a027f4bfed77d39362989b87b6";
+my @guids = child_guids($guid,$db);
+is( join("|",@guids), $res_guid,
 	'child_guids() works.');
 
 $guid = "14d772a027f4bfed77d39362989b87b6";
@@ -174,15 +194,15 @@ is( is_leaf_account($acct,$db), 0,
 	'is_leaf_account() works.');
 
 $acct = "Assets:Current Assets";
-is( get_parent_balance($acct, $db, 0), 4600, 
-	'get_parent_balance() works.');
+$guid = "53f15dbd44e778d1f48efb53e6df0fa2";
+is( guid_balance($guid, $db, 0), 4600, 
+	'guid_balance($guid,$db) works.');
 
-exit;
+$acct = "Assets";
+$guid = "9fc6b68385116caba4611d1440fa6a24";
+is( guid_balance($guid, $db, 0), 104600, 
+	'guid_balance($guid,$db) works.');
 
 done_testing(); 
 exit;
-
-$acct = "Assets";
-is( get_parent_balance($acct, $db, 0), 4600, 
-	'Balance of parent account correct.');
 
