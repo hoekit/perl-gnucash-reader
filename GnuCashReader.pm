@@ -94,17 +94,14 @@ sub is_leaf_account {
 sub guid_balance {
 	my ($guid,$db,$balance) = @_;
 
-	# Get list of child accounts
+	# Add balances in child accounts if any
+	my $child_balance = 0;
 	foreach my $g (child_guids($guid,$db)) {
-		# If child account is leaf, get_child_balance for leaf account
-		if (is_leaf_guid($g,$db)) {
-			$balance += leaf_guid_balance($g,$db);
-		} else {
-			# If child account not leaf, recursively call guid_balance
-			$balance += guid_balance($g,$db,$balance);
-		}
+		$balance += guid_balance($g,$db,$child_balance);
 	}
-	return $balance;
+	
+	# Add balance in parent account
+	return $balance + leaf_guid_balance($guid,$db);
 }
 
 sub acct_balance {

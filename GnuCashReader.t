@@ -102,12 +102,21 @@ $guid = "53f15dbd44e778d1f48efb53e6df0fa2";
 is( guid_balance($guid, $db, 0), 4600, 
 	'guid_balance($guid,$db) works.');
 
+$acct = "Assets:Current Assets:Checking Account";
+$guid = "14d772a027f4bfed77d39362989b87b6";
+is( guid_balance($guid, $db, 0), 4600, 
+	'guid_balance($guid,$db) works.');
+
 $guid = "9fc6b68385116caba4611d1440fa6a24";
 is( guid_balance($guid, $db, 0), 104600, 
 	'guid_balance($guid,$db) works.');
 
 $acct = "Assets";
 is( acct_balance($acct, $db, 0), 104600, 
+	'acct_balance($acct,$db) works.');
+
+$acct = "Assets:Current Assets:Checking Account";
+is( acct_balance($acct, $db, 0), 4600, 
 	'acct_balance($acct,$db) works.');
 
 
