@@ -5,11 +5,11 @@ use warnings;
 use GnuCashReader qw(acct_balance get_guid);
 use Path::Tiny qw( path ); # See http://perlmaven.com/slurp 
 
-my $db = "/home/hoekit/data/GnuCash/Accounts_sql.gnucash";
-die usage() unless $ARGV[0];
+my $db = $ENV{"HOME"}."/data/GnuCash/Accounts_sql.gnucash";
+my $DEF_COND_FILE = $ENV{"HOME"}."/.gc_checks.txt";
 
 # read conditions from file
-my $cond_file = $ARGV[0];
+my $cond_file = get_cond_file();
 my @cond = split("\n",path($cond_file)->slurp);
 
 # for each condition
@@ -62,4 +62,18 @@ DETAILS:
 
 HERE
 }
+
+# Read from $HOME/.gc_checks.txt if it exists
+# Otherwise read from $ARGV[0]
+# Otherwise raise an error
+sub get_cond_file {
+	if (defined($ARGV[0])) {
+		return $ARGV[0];
+	} elsif ( path($DEF_COND_FILE)->exists ) {
+		return $DEF_COND_FILE;
+	} else {
+		die usage();
+	}
+}
+
 
