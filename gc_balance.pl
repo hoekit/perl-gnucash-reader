@@ -3,7 +3,7 @@
 use strict;
 use GnuCashReader qw(acct_balance);
 
-my $db = "/home/hoekit/data/GnuCash/Accounts_sql.gnucash";
+my $db = $ENV{"HOME"}."/data/GnuCash/Accounts_sql.gnucash";
 die usage() unless $ARGV[0];
 my $acct = $ARGV[0];
 
