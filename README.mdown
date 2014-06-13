@@ -1,7 +1,40 @@
+# Usage
 
-# Tools
+1. Run on command line:
 
-## File: gc_check.pl
+		$ perl -MGnuCashReader -e 'print GnuCashReader::acct_balance("Assets","Accounts.gnucash");'
+
+2. Include in script:
+
+		use GnuCashReader qw(acct_balance);
+
+		# Define GnuCash sqlite file
+		my $db = "Accounts_sql.gnucash";
+
+		# Print balance of "Current Assets"
+		print acct_balance("Assets:Current Assets", $db);
+
+
+# Dependencies
+
+1. <code>sqlite3</code> should run at the command line .e.g:
+
+		$ sqlite3 
+		SQLite version 3.7.17 2013-05-20 00:56:22
+		Enter ".help" for instructions
+		Enter SQL statements terminated with a ";"
+		sqlite> 
+
+2. GnuCash file is in sqlite3 format:
+
+		$ file simple-checkbook.gnucash 
+		simple-checkbook.gnucash: SQLite 3.x database
+
+
+----
+# Useful Tools
+
+## gc_check.pl
 
 **Purpose**: Check account balances against a list of conditions and prints
 matching conditions. Also raises error if account is not found.
