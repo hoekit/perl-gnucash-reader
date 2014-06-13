@@ -39,7 +39,8 @@ sub leaf_guid_balance {
 	my ($guid,$db) = @_;
 	my $sql = 'select sum(value_num) from splits '.
 				'where account_guid = "'.$guid.'"';
-	return run_sql($sql,$db);
+	my $result = run_sql($sql,$db);
+	return $result eq "" ? 0 : $result;
 }
 
 sub guid_sql {
