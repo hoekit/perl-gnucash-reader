@@ -106,7 +106,7 @@ sub guid_balance {
 
 sub acct_balance {
 	my ($acct,$db) = @_;
-	guid_balance( get_guid($acct,$db), $db, 0);
+	return guid_balance( get_guid($acct,$db), $db, 0)/100;
 }
 
 

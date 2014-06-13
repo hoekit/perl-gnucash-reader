@@ -112,11 +112,11 @@ is( guid_balance($guid, $db, 0), 104600,
 	'guid_balance($guid,$db) works.');
 
 $acct = "Assets";
-is( acct_balance($acct, $db, 0), 104600, 
+is( acct_balance($acct, $db), 1046, 
 	'acct_balance($acct,$db) works.');
 
 $acct = "Assets:Current Assets:Checking Account";
-is( acct_balance($acct, $db, 0), 4600, 
+is( acct_balance($acct, $db), 46, 
 	'acct_balance($acct,$db) works.');
 
 
