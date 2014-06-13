@@ -15,6 +15,7 @@ my @cond = split("\n",path($cond_file)->slurp);
 # for each condition
 foreach my $c (@cond) {
 	# extract account name and condition
+	next if $c =~ /^\s*$/;
 	my ($acct, $cond) = $c =~ /^\s*"(.*)"\s*(.*)/;
 	#print "Acct: $acct; Condition: $cond\n";
 
