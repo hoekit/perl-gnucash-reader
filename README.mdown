@@ -1,0 +1,24 @@
+
+# Tools
+
+## File: gc_check.pl
+
+**Purpose**: Check account balances against a list of conditions and prints
+matching conditions. Also raises error if account is not found.
+
+1. Define conditions in a file e.g.: <code>t/checks.txt</code>:
+
+		# File: checks.txt
+		"Assets:Current Assets:Checking Account" < 1000
+		"Assets:Current Assets:Checking Account" >= 1000
+		"Assets:No Such Account" > 100
+
+2. Run checks:
+
+		$ gc_check.pl t/checks.txt
+		"Assets:Current Assets:Checking Account" < 1000
+		ERROR: "Assets:No Such Account" not found!
+
+
+
+

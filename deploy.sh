@@ -12,6 +12,7 @@ fi
 # Copy script to $HOME directory
 if [ -d $HOME/bin ]; then
 	cp gc_balance.pl $HOME/bin
+	cp gc_check.pl $HOME/bin
 	echo Copied script.
 else
 	echo ERROR! $HOME/bin not defined!

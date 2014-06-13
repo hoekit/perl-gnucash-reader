@@ -1,0 +1,5 @@
+"Assets:Current Assets:Checking Account" < 1000
+"Assets:Current Assets:Checking Account" >= 1000
+"Assets:" > 1000
+"Assets:" <= 1000
+"Assets:No Such Account" > 100
