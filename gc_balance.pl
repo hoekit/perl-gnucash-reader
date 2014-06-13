@@ -1,16 +1,13 @@
 #!/usr/bin/perl -w
 
 use strict;
-use GnuCashReader qw(acct_balance get_guid);
+use GnuCashReader qw(acct_balance);
 
-my $db = "/home/hoekit/data/GnuCash/Accounts_sql.gnucash";
+my $db = "home/hoekit/data/GnuCash/Accounts_sql.gnucash";
 die usage() unless $ARGV[0];
 my $acct = $ARGV[0];
 
-#print $acct."\n"; 
-#print get_guid($acct, $db)."\n"; 
-
-my $bal = acct_balance($acct, $db, 0);
+my $bal = acct_balance($acct, $db);
 print $bal/100; print "\n";
 
 
