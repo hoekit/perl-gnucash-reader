@@ -1,10 +1,14 @@
-# Usage
+# perl-gnucash-reader
+----
+A perlish module and some useful tools to access GnuCash data.
 
-1. Run on command line:
+## Usage
+
+1. Run directly from command line:
 
 		$ perl -MGnuCashReader -e 'print GnuCashReader::acct_balance("Assets","Accounts.gnucash");'
 
-2. Include in script:
+2. Use in a perl script:
 
 		use GnuCashReader qw(acct_balance);
 
@@ -15,43 +19,43 @@
 		print acct_balance("Assets:Current Assets", $db);
 
 
-# Dependencies
+## Dependencies
 
-1. <code>sqlite3</code> should run at the command line .e.g:
+> <code>sqlite3</code> should run at the command line .e.g:
 
-		$ sqlite3 
-		SQLite version 3.7.17 2013-05-20 00:56:22
-		Enter ".help" for instructions
-		Enter SQL statements terminated with a ";"
-		sqlite> 
+	$ sqlite3 
+	SQLite version 3.7.17 2013-05-20 00:56:22
+	Enter ".help" for instructions
+	Enter SQL statements terminated with a ";"
+	sqlite> 
 
-2. GnuCash file is in sqlite3 format:
+> GnuCash file is in sqlite3 format:
 
-		$ file simple-checkbook.gnucash 
-		simple-checkbook.gnucash: SQLite 3.x database
+	$ file simple-checkbook.gnucash 
+	simple-checkbook.gnucash: SQLite 3.x database
 
+It is quite easy to [convert from XML format to SQLite format][1].
 
 ----
-# Useful Tools
+## Useful Tools
 
-## gc_check.pl
+### gc_check.pl
 
 **Purpose**: Check account balances against a list of conditions and prints
 matching conditions. Also raises error if account is not found.
 
-1. Define conditions in a file e.g.: <code>t/checks.txt</code>:
+1. Define conditions in a file. Defaults to <code>$HOME/.gc_checks.txt</code>:
 
-		# File: checks.txt
+		# File: $HOME/.gc_checks.txt
 		"Assets:Current Assets:Checking Account" < 1000
 		"Assets:Current Assets:Checking Account" >= 1000
 		"Assets:No Such Account" > 100
 
 2. Run checks:
 
-		$ gc_check.pl t/checks.txt
+		$ gc_check.pl
 		"Assets:Current Assets:Checking Account" < 1000
 		ERROR: "Assets:No Such Account" not found!
 
 
-
-
+[1]: http://gnucash.1415818.n4.nabble.com/No-SQL-backend-for-2-4-in-Linux-td3170733.html
