@@ -4,7 +4,7 @@ package GnuCashReader;
 use Exporter;
 @ISA = ('Exporter');
 @EXPORT_OK = ('acct_balance', 'guid_balance', 'get_guid', 
-			  'run_sql', 'gen_sql', 'get_child_balance', 'leaf_guid_balance',
+			  'run_sql', 'acct_bal_sql', 'leaf_guid_balance',
 			  'guid_sql', 'child_guids', 'is_leaf_guid', 'is_leaf_account' );
 
 #### Exported functions ####
@@ -17,22 +17,13 @@ sub run_sql {
 	return $res;
 }
 
-sub gen_sql {
+# Given an account name in full e.g. "Assets:Current Assets",
+#   Return an sql statement that computes the balance of that account.
+sub acct_bal_sql {
 	my ($acct_name) = @_;
 	my $sub_sql = guid_sql($acct_name);
 	return  "select sum(value_num) from splits ".
 			" where account_guid = ($sub_sql)";
-}
-
-# Get balance of child account i.e an account without child accounts beneath
-sub get_child_balance {
-	my ($acct_name, $db) = @_;
-
-	# Generate sql
-	my $sql = gen_sql("Assets:Current Assets:Checking Account");
-
-	# Run sql
-	run_sql($sql,$db);
 }
 
 sub leaf_guid_balance {

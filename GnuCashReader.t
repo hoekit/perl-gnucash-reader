@@ -1,6 +1,6 @@
 #!/usr/bin/perl -w
 
-use GnuCashReader ('acct_balance', 'run_sql', 'gen_sql', 'get_child_balance',
+use GnuCashReader ('acct_balance', 'run_sql', 'acct_bal_sql',
 				   'leaf_guid_balance', 'guid_sql', 'get_guid', 'child_guids',
 				   'is_leaf_guid', 'is_leaf_account', 'guid_balance');
 use strict;
@@ -46,12 +46,8 @@ $sql = 'select sum(value_num) from splits  where account_guid = (select guid '
 .'from accounts where name = "Current Assets" and parent_guid = (select guid '
 .'from accounts where name = "Assets" and parent_guid = (select guid from '
 .'accounts where name = "Root Account"))))';
-is( gen_sql("Assets:Current Assets:Checking Account"), $sql,
-	'gen_sql() works.');
-
-$acct = "Assets:Current Assets:Checking Account";
-is( get_child_balance($acct, $db), 4600, 
-	'get_child_balance() works.');
+is( acct_bal_sql("Assets:Current Assets:Checking Account"), $sql,
+	'acct_bal_sql() works.');
 
 $acct = "Assets:Current Assets:Checking Account";
 $guid = "14d772a027f4bfed77d39362989b87b6";
