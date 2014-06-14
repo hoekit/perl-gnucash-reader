@@ -9,15 +9,18 @@ use Exporter;
 
 #### Exported functions ####
 
+# Given: an SQL statement, an sqlite database file
+#   Return: result of running the SQL statement
 sub run_sql {
 	my ($sql,$db) = @_;
+	# TODO: croak if sqlite database file not found.
 	my $cmd = "sqlite3 $db '$sql;'";
 	#print $cmd."\n";
 	my $res = `$cmd`; chomp $res;
 	return $res;
 }
 
-# Given an account name in full e.g. "Assets:Current Assets",
+# Given: an account name in full e.g. "Assets:Current Assets",
 #   Return an sql statement that computes the balance of that account.
 sub acct_bal_sql {
 	my ($acct_name) = @_;
